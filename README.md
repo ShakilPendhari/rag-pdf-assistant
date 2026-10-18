@@ -16,5 +16,5 @@ A modular Retrieval-Augmented Generation (RAG) system built with **LangChain**, 
 
 1. **Clone the repository and navigate to the project directory:**
    ```bash
-   git clone <your-repository-url>
+   git clone https://github.com/ShakilPendhari/rag-pdf-assistant.git
    cd RAG
