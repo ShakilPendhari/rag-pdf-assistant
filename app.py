@@ -35,13 +35,19 @@ with st.sidebar:
                 
                 # Local Ollama Embeddings
                 embeddings = OllamaEmbeddings(model="nomic-embed-text")
-                vector_store = Chroma.from_documents(
-                    documents=chunks,
-                    embedding=embeddings,
-                    persist_directory=PERSIST_DIRECTORY
+                
+                # Create vector store incrementally in batches to prevent local timeout/memory crashes on large PDFs
+                vector_store = Chroma(
+                    persist_directory=PERSIST_DIRECTORY,
+                    embedding_function=embeddings
                 )
                 
-                st.success(f"Successfully processed {len(chunks)} chunks from {uploaded_file.name}!")
+                batch_size = 100
+                for i in range(0, len(chunks), batch_size):
+                    batch = chunks[i:i + batch_size]
+                    vector_store.add_documents(batch)
+                
+                st.success(f"Successfully processed {len(chunks)} chunks from {uploaded_file.name} in batches!")
                 os.remove(temp_pdf_path)
 
 # Main Chat Interface
